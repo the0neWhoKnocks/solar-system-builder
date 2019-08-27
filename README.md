@@ -1,2 +1,6 @@
-# solar-system-builder
-A GUI to help build a Solar System
+# Solar System Builder (WIP)
+
+A GUI to build a Solar System
+---
+
+
