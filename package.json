@@ -1,0 +1,42 @@
+{
+  "name": "solar-system-builder",
+  "version": "1.0.0",
+  "description": "A GUI to help build a Solar System",
+  "main": "src/index.js",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@noxx/babel-plugin-a2rp": "^1.0.1",
+    "@noxx/webpack-tidy-plugin": "^3.0.1",
+    "babel-loader": "^8.0.6",
+    "browser-sync": "^2.26.7",
+    "concurrently": "^4.1.2",
+    "eslint": "^6.2.2",
+    "html-webpack-plugin": "^3.2.0",
+    "simple-progress-webpack-plugin": "^1.1.2",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
+  },
+  "scripts": {
+    "start": "concurrently --kill-others -p {name} -n BUNDLE,SERVER,SYNC -c black.bgCyan,black.bgMagenta,black.bgGreen \"npm run watch:client\" \"npm run start:server\" \"npm run watch:html\"",
+    "start:server": "http-server ./public -p 3000",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch:client": "webpack --watch",
+    "watch:html": "babel-node ./browserSync"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the0neWhoKnocks/solar-system-builder.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/the0neWhoKnocks/solar-system-builder/issues"
+  },
+  "homepage": "https://github.com/the0neWhoKnocks/solar-system-builder#readme"
+}
