@@ -103,18 +103,6 @@ module.exports = {
         avoidEscape: true,
       }
     ],
-    'require-jsdoc': [
-      'error',
-      {
-        require: {
-          ArrowFunctionExpression: true,
-          ClassDeclaration: true,
-          FunctionDeclaration: true,
-          FunctionExpression: true,
-          MethodDefinition: true,
-        }
-      }
-    ],
     semi: [
       'error',
       'always',
