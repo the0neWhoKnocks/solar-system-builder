@@ -12,10 +12,16 @@ styles.innerHTML = `
   
   .bg-grid {
     background: #262d38;
+    cursor: crosshair;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }  
+  .bg-grid .hover-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
   }  
 `;
 document.head.append(styles);

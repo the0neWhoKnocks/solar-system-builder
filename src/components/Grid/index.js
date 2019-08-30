@@ -7,11 +7,17 @@ export default class Grid {
     rows = 10,
     rowSpacing = 50,
   } = {}) {
-    this.canvas = document.createElement('canvas');
-    this.ctx = this.canvas.getContext('2d');
+    this.container = document.createElement('div');
+    this.gridCanvas = document.createElement('canvas');
+    this.gridCtx = this.gridCanvas.getContext('2d');
+    this.hoverCanvas = document.createElement('canvas');
+    this.hoverCtx = this.hoverCanvas.getContext('2d');
     
-    this.canvas.width = columns * columnSpacing;
-    this.canvas.height = rows * rowSpacing;
+    this.gridCanvas.width = columns * columnSpacing;
+    this.gridCanvas.height = rows * rowSpacing;
+    this.hoverCanvas.width = this.gridCanvas.width;
+    this.hoverCanvas.height = this.gridCanvas.height;
+    
     this.columns = columns;
     this.columnSpacing = columnSpacing;
     this.rows = rows;
@@ -20,15 +26,89 @@ export default class Grid {
     
     this.renderGrid();
     
-    if(className) this.canvas.classList.add(className);
+    if(className) this.container.classList.add(className);
+    this.gridCanvas.classList.add('grid-canvas');
+    this.hoverCanvas.classList.add('hover-canvas');
     
-    return this.canvas;
+    this.container.append(this.gridCanvas);
+    this.container.append(this.hoverCanvas);
+    
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.addListeners();
+    
+    this.xPos = 0;
+    this.yPos = 0;
+    this.domCheck = setInterval(() => {
+      if( document.body.contains(this.container) ){
+        clearInterval(this.domCheck);
+        this.handleResize();
+      }
+    }, 1000);
+    
+    return this.container;
+  }
+  
+  addListeners() {
+    window.addEventListener('resize', this.handleResize);
+    this.hoverCanvas.addEventListener('mousemove', this.handleMouseMove);
+  }
+  
+  checkHoverPoint(pointX, pointY, mouseX, mouseY, radius) {
+    const squaredDistance = (pointX - mouseX) * (pointX - mouseX) + (pointY - mouseY) * (pointY - mouseY);
+    const squaredRadius = radius * radius;
+    
+    return {
+      inRadius: squaredDistance <= squaredRadius,
+      scale: ((squaredRadius - squaredDistance) / 100) * 0.001,
+    };
+  }
+  
+  handleMouseMove(ev) {
+    const mouseX = Math.max(0, ev.x - this.xPos);
+    const mouseY = Math.max(0, ev.y - this.yPos);
+    const radius = this.columnSpacing * (this.columns / 3);
+    const dotSize = 10;
+    const dotRadius = dotSize / 2;
+    const pixelAdjustment = 0.5;
+    
+    this.hoverCtx.clearRect(0, 0, this.hoverCanvas.width, this.hoverCanvas.height);
+    this.hoverCtx.fillStyle = 'red';
+    this.hoverCtx.beginPath();
+    for(let row=0; row<=this.rows; row++){
+      const rowPadding = (row === this.rows) ? -pixelAdjustment : pixelAdjustment;
+      
+      for(let col=0; col<=this.columns; col++){
+        const colPadding = (col === this.columns) ? -pixelAdjustment : pixelAdjustment;
+        
+        const pointX = ((col * this.columnSpacing) - this.hoverSprite.width / 2);
+        const pointY = ((row * this.rowSpacing) - this.hoverSprite.height / 2);
+        const { inRadius, scale } = this.checkHoverPoint(pointX, pointY, mouseX, mouseY, radius);
+        
+        if( inRadius ){
+          const scaledRadius = dotRadius * scale;
+          const x = (colPadding + (pointX + scaledRadius)) | 0;
+          const y = (rowPadding + (pointY + scaledRadius)) | 0;
+          
+          this.hoverCtx.moveTo(x, y);
+          this.hoverCtx.arc(x, y, scaledRadius, 0, Math.PI * 2, true);
+        }
+      }
+    }
+    this.hoverCtx.fill();
+  }
+  
+  handleResize() {
+    const { left, top } = this.container.getBoundingClientRect();
+    this.xPos = left;
+    this.yPos = top;
   }
   
   renderGrid() {
     const sprite = document.createElement('canvas');
     const ctx = sprite.getContext('2d');
     const scale = 0.3;
+    const pixelAdjustment = 0.5;
     
     sprite.width = this.columnSpacing * scale;
     sprite.height = this.rowSpacing * scale;
@@ -47,21 +127,22 @@ export default class Grid {
     ctx.stroke();
     
     for(let row=0; row<=this.rows; row++){
-      const rowPadding = (row === this.rows) ? -0.5 : 0.5;
+      const rowPadding = (row === this.rows) ? -pixelAdjustment : pixelAdjustment;
       
       for(let col=0; col<=this.columns; col++){
-        const colPadding = (col === this.columns) ? -0.5 : 0.5;
+        const colPadding = (col === this.columns) ? -pixelAdjustment : pixelAdjustment;
         
-        this.ctx.drawImage(
+        this.gridCtx.drawImage(
           sprite,
           0,
           0,
-          this.canvas.width,
-          this.canvas.height,
-          ((col * this.columnSpacing) - sprite.width / 2) + colPadding, 
-          ((row * this.rowSpacing) - sprite.height / 2) + rowPadding,
-          this.canvas.width,
-          this.canvas.height
+          this.gridCanvas.width,
+          this.gridCanvas.height,
+          // bitwise operator to get non-aliased lines https://www.html5rocks.com/en/tutorials/canvas/performance/
+          (colPadding + ((col * this.columnSpacing) - sprite.width / 2)) | 0, 
+          (rowPadding + ((row * this.rowSpacing) - sprite.height / 2)) | 0,
+          this.gridCanvas.width,
+          this.gridCanvas.height
         );
       }
     }
