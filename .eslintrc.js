@@ -92,7 +92,7 @@ module.exports = {
     'object-property-newline': [
       'error',
       {
-        allowAllPropertiesOnSameLine: false,
+        allowAllPropertiesOnSameLine: true,
       }
     ],
     quotes: [
