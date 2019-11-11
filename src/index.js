@@ -11,6 +11,7 @@ styles.innerHTML = `
   }
   
   .bg-grid {
+    font-size: 0;
     background: #262d38;
     cursor: crosshair;
     position: absolute;
