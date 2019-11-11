@@ -13,6 +13,7 @@ module.exports = {
   aliases: {
     COMPONENTS: `${ SRC }/components`,
     PUBLIC,
+    UTILS: `${ SRC }/utils`,
   },
   entries: {
     'js/app': `${ SRC }/index.js`,

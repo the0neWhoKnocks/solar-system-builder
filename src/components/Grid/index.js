@@ -1,3 +1,24 @@
+import addStyles from 'UTILS/addStyles';
+
+addStyles('gridStyles', `
+  .bg-grid {
+    font-size: 0;
+    background: #262d38;
+    cursor: crosshair;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }  
+  .bg-grid .hover-canvas {
+    filter: blur(14px);
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+`);
+
 export default class Grid {
   constructor({
     className,
