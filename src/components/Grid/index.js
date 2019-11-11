@@ -76,22 +76,15 @@ export default class Grid {
     this.hoverCtx.fillStyle = 'red';
     this.hoverCtx.beginPath();
     for(let row=0; row<=this.rows; row++){
-      const rowPadding = (row === this.rows) ? -pixelAdjustment : pixelAdjustment;
-      
       for(let col=0; col<=this.columns; col++){
-        const colPadding = (col === this.columns) ? -pixelAdjustment : pixelAdjustment;
-        
-        const pointX = ((col * this.columnSpacing) - this.hoverSprite.width / 2);
-        const pointY = ((row * this.rowSpacing) - this.hoverSprite.height / 2);
+        const pointX = (col * this.columnSpacing) + pixelAdjustment;
+        const pointY = (row * this.rowSpacing) + pixelAdjustment;
         const { inRadius, scale } = this.checkHoverPoint(pointX, pointY, mouseX, mouseY, radius);
         
         if( inRadius ){
           const scaledRadius = dotRadius * scale;
-          const x = (colPadding + (pointX + scaledRadius)) | 0;
-          const y = (rowPadding + (pointY + scaledRadius)) | 0;
-          
-          this.hoverCtx.moveTo(x, y);
-          this.hoverCtx.arc(x, y, scaledRadius, 0, Math.PI * 2, true);
+          this.hoverCtx.moveTo(pointX, pointY);
+          this.hoverCtx.arc(pointX, pointY, scaledRadius, 0, Math.PI * 2, true);
         }
       }
     }
