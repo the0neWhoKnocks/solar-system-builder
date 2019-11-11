@@ -20,6 +20,8 @@ styles.innerHTML = `
     transform: translate(-50%, -50%);
   }  
   .bg-grid .hover-canvas {
+    filter: blur(14px);
+    opacity: 0.3;
     position: absolute;
     top: 0;
     left: 0;

@@ -34,6 +34,7 @@ export default class Grid {
     this.container.append(this.hoverCanvas);
     
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.addListeners();
     
@@ -52,6 +53,7 @@ export default class Grid {
   addListeners() {
     window.addEventListener('resize', this.handleResize);
     this.hoverCanvas.addEventListener('mousemove', this.handleMouseMove);
+    this.hoverCanvas.addEventListener('mouseleave', this.handleMouseLeave);
   }
   
   checkHoverPoint(pointX, pointY, mouseX, mouseY, radius) {
@@ -68,12 +70,12 @@ export default class Grid {
     const mouseX = Math.max(0, ev.x - this.xPos);
     const mouseY = Math.max(0, ev.y - this.yPos);
     const radius = this.columnSpacing * (this.columns / 3);
-    const dotSize = 10;
+    const dotSize = 20;
     const dotRadius = dotSize / 2;
     const pixelAdjustment = 0.5;
     
     this.hoverCtx.clearRect(0, 0, this.hoverCanvas.width, this.hoverCanvas.height);
-    this.hoverCtx.fillStyle = 'red';
+    this.hoverCtx.fillStyle = '#fff';
     this.hoverCtx.beginPath();
     for(let row=0; row<=this.rows; row++){
       for(let col=0; col<=this.columns; col++){
@@ -89,6 +91,10 @@ export default class Grid {
       }
     }
     this.hoverCtx.fill();
+  }
+  
+  handleMouseLeave() {
+    this.hoverCtx.clearRect(0, 0, this.hoverCanvas.width, this.hoverCanvas.height);
   }
   
   handleResize() {
