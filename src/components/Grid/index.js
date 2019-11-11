@@ -1,33 +1,30 @@
 import addStyles from 'UTILS/addStyles';
 
-addStyles('gridStyles', `
-  .bg-grid {
-    font-size: 0;
-    background: #262d38;
-    cursor: crosshair;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }  
-  .bg-grid .hover-canvas {
-    filter: blur(14px);
-    opacity: 0.3;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-`);
-
 export default class Grid {
   constructor({
-    className,
+    className = 'bg-grid',
     columns = 20,
     columnSpacing = 50,
     lineColor,
     rows = 10,
     rowSpacing = 50,
   } = {}) {
+    addStyles('gridStyles', `
+      .${ className } {
+        font-size: 0;
+        background: #262d38;
+        cursor: crosshair;
+      }
+      
+      .${ className } .hover-canvas {
+        filter: blur(14px);
+        opacity: 0.3;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    `);
+    
     this.container = document.createElement('div');
     this.gridCanvas = document.createElement('canvas');
     this.gridCtx = this.gridCanvas.getContext('2d');
@@ -54,27 +51,8 @@ export default class Grid {
     this.container.append(this.gridCanvas);
     this.container.append(this.hoverCanvas);
     
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-    this.addListeners();
-    
-    this.xPos = 0;
-    this.yPos = 0;
-    this.domCheck = setInterval(() => {
-      if( document.body.contains(this.container) ){
-        clearInterval(this.domCheck);
-        this.handleResize();
-      }
-    }, 1000);
-    
-    return this.container;
-  }
-  
-  addListeners() {
-    window.addEventListener('resize', this.handleResize);
-    this.hoverCanvas.addEventListener('mousemove', this.handleMouseMove);
-    this.hoverCanvas.addEventListener('mouseleave', this.handleMouseLeave);
+    this.mouseMoved = this.mouseMoved.bind(this);
+    this.mouseLeft = this.mouseLeft.bind(this);
   }
   
   checkHoverPoint(pointX, pointY, mouseX, mouseY, radius) {
@@ -87,9 +65,7 @@ export default class Grid {
     };
   }
   
-  handleMouseMove(ev) {
-    const mouseX = Math.max(0, ev.x - this.xPos);
-    const mouseY = Math.max(0, ev.y - this.yPos);
+  mouseMoved({ mouseX, mouseY }) {
     const radius = this.columnSpacing * (this.columns / 3);
     const dotSize = 20;
     const dotRadius = dotSize / 2;
@@ -114,14 +90,8 @@ export default class Grid {
     this.hoverCtx.fill();
   }
   
-  handleMouseLeave() {
+  mouseLeft() {
     this.hoverCtx.clearRect(0, 0, this.hoverCanvas.width, this.hoverCanvas.height);
-  }
-  
-  handleResize() {
-    const { left, top } = this.container.getBoundingClientRect();
-    this.xPos = left;
-    this.yPos = top;
   }
   
   renderGrid() {
