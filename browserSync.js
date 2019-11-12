@@ -11,7 +11,7 @@ browserSync.init({
   ],
   ghostMode: false, // don't mirror interactions in other browsers
   // logLevel: 'debug',
-  // notify: false, // Don't show any notifications in the browser.
+  notify: false, // Don't show any notifications in the browser.
   open: false,
   proxy: 'http://localhost:3000',
   // Wait X seconds after a reload event before allowing more.
