@@ -11,6 +11,7 @@ export default class Planet {
     y = 0,
   } = {}) {
     this.color = color || Planet.genColor();
+    this.id = Date.now();
     
     this.planet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     this.planet.setAttributeNS(null, 'cx', x);
@@ -18,6 +19,7 @@ export default class Planet {
     this.planet.setAttributeNS(null, 'r', radius);
     this.planet.setAttributeNS(null, 'fill', this.color);
     this.planet.setAttributeNS(null, 'stroke', 'none');
+    this.planet.setAttributeNS(null, 'data-id', this.id);
     
     parentEl.appendChild(this.planet);
   }
