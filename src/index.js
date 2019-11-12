@@ -1,5 +1,6 @@
 import Grid from 'COMPONENTS/Grid';
 import PlanetCreator from 'COMPONENTS/PlanetCreator';
+import RootNav from 'COMPONENTS/RootNav';
 import addStyles from 'UTILS/addStyles';
 
 addStyles('rootStyles', `
@@ -12,7 +13,6 @@ addStyles('rootStyles', `
   }
   
   .container {
-    overflow: hidden;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -27,6 +27,8 @@ const eventHandlers = {
   mouseUp: [],
 };
 let container;
+let creatorContainer;
+let planetCreator;
 let contXPos;
 let contYPos;
 
@@ -61,17 +63,17 @@ function handleMouseUp() {
 }
 
 function handleResize() {
-  const { left, top } = container.getBoundingClientRect();
+  const { left, top } = creatorContainer.getBoundingClientRect();
   contXPos = left;
   contYPos = top;
 }
 
 function addListeners() {
   window.addEventListener('resize', handleResize);
-  container.addEventListener('mousedown', handleMouseDown);
-  container.addEventListener('mousemove', handleMouseMove);
-  container.addEventListener('mouseleave', handleMouseLeave);
-  container.addEventListener('mouseup', handleMouseUp);
+  creatorContainer.addEventListener('mousedown', handleMouseDown);
+  creatorContainer.addEventListener('mousemove', handleMouseMove);
+  creatorContainer.addEventListener('mouseleave', handleMouseLeave);
+  creatorContainer.addEventListener('mouseup', handleMouseUp);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -79,20 +81,33 @@ document.addEventListener('DOMContentLoaded', () => {
   container.setAttribute('class', 'container');
   document.body.append(container);
   
+  const rootNav = new RootNav({
+    onClear: () => {
+      [...planetCreator.parentSVG.childNodes].forEach((el) => {
+        el.remove();
+      });
+    },
+  });
+  container.append(rootNav.nav);
+  
+  creatorContainer = document.createElement('div');
+  creatorContainer.setAttribute('class', 'creator-container');
+  container.append(creatorContainer);
+  
   const grid = new Grid({
     lineColor: 'rgba(255, 255, 255, 0.1)',
   });
-  container.append(grid.container);
+  creatorContainer.append(grid.container);
   eventHandlers.mouseMove.push(grid.mouseMoved);
   eventHandlers.mouseLeave.push(grid.mouseLeft);
   
-  const pC = new PlanetCreator({
-    parentEl: container,
+  planetCreator = new PlanetCreator({
+    parentEl: creatorContainer,
   });
-  container.append(pC.parentSVG);
-  eventHandlers.mouseDown.push(pC.mouseDown);
-  eventHandlers.mouseMove.push(pC.mouseMoved);
-  eventHandlers.mouseUp.push(pC.mouseUp);
+  creatorContainer.append(planetCreator.parentSVG);
+  eventHandlers.mouseDown.push(planetCreator.mouseDown);
+  eventHandlers.mouseMove.push(planetCreator.mouseMoved);
+  eventHandlers.mouseUp.push(planetCreator.mouseUp);
   
   addListeners();
   handleResize();
