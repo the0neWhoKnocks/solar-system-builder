@@ -1,9 +1,9 @@
-import Planet from 'COMPONENTS/Planet';
+import CelestialBody from 'COMPONENTS/CelestialBody';
 import addStyles from 'UTILS/addStyles';
 
-export default class PlanetCreator {
+export default class Creator {
   constructor({
-    className = 'planet-creator',
+    className = 'creator',
     parentEl,
   } = {}) {
     addStyles('pcStyles', `
@@ -62,13 +62,13 @@ export default class PlanetCreator {
   mouseDown({ mouseX, mouseY }) {
     this.startX = mouseX;
     this.startY = mouseY;
-    this.currentPlanet = new Planet({
+    this.currentCelestialBody = new CelestialBody({
       parentEl: this.parentSVG,
       x: this.startX,
       y: this.startY,
     });
     this.mouseIsDown = true;
-    this.planets[this.currentPlanet.id] = this.currentPlanet;
+    this.planets[this.currentCelestialBody.id] = this.currentCelestialBody;
   }
   
   mouseMoved({ mouseX, mouseY }) {
@@ -76,7 +76,7 @@ export default class PlanetCreator {
       const diffX = mouseX - this.startX;
       const diffY = mouseY - this.startY;
       const radius = Math.sqrt( (diffX * diffX) + (diffY * diffY) );
-      this.currentPlanet.setRadius(radius);
+      this.currentCelestialBody.setRadius(radius);
     }
   }
   

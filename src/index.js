@@ -1,5 +1,5 @@
+import Creator from 'COMPONENTS/Creator';
 import Grid from 'COMPONENTS/Grid';
-import PlanetCreator from 'COMPONENTS/PlanetCreator';
 import RootNav from 'COMPONENTS/RootNav';
 import addStyles from 'UTILS/addStyles';
 
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   eventHandlers.mouseMove.push(grid.mouseMoved);
   eventHandlers.mouseLeave.push(grid.mouseLeft);
   
-  planetCreator = new PlanetCreator({
+  planetCreator = new Creator({
     parentEl: creatorContainer,
   });
   creatorContainer.append(planetCreator.parentSVG);
