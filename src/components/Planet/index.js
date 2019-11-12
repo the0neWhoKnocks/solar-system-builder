@@ -2,7 +2,7 @@ export default class Planet {
   constructor({
     color = '#CCC',
     parentEl,
-    radius = 10,
+    radius = 0,
     x = 0,
     y = 0,
   } = {}) {
