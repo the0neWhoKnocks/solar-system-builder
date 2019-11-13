@@ -113,17 +113,24 @@ export default class Creator {
       
       switch(data.type){
         case CelestialBody.EDITABLE_TYPE__COLOR:
+          if(value.lenth < 6) errors.push(`- [${ prop }] Hex colors should be 6 characters long, recieved '${ value }'`);
+          
           markup = `<input type="color" name="${ prop }" value="${ value }" />`;
           break;
           
-        case CelestialBody.EDITABLE_TYPE__NUMBER:
-          if(!data.min) errors.push(`- [${ prop }] Missing 'min' value for type '${ data.type }'`);
-          if(!data.max) errors.push(`- [${ prop }] Missing 'max' value for type '${ data.type }'`);
+        case CelestialBody.EDITABLE_TYPE__NUMBER: {
+          if(value === undefined) errors.push(`- [${ prop }] Missing value`);
           
-          markup = `<input type="number" name="${ prop }" min="${ data.min }" max="${ data.max }" value="${ value }" />`;
+          const min = (data.min !== undefined) ? `min="${ data.min }"` : '';
+          const max = (data.max !== undefined) ? `max="${ data.max }"` : '';
+          
+          markup = `<input type="number" name="${ prop }" ${ min } ${ max } value="${ value }" />`;
           break;
+        }
           
         case CelestialBody.EDITABLE_TYPE__SELECT:
+          if(!data.options || !data.options.length) errors.push(`- [${ prop }] Missing options`);
+          
           markup = `<select name="${ prop }">${ data.options().map((option) => {
             return `<option value="${ option }" ${ value === option ? 'selected' : '' }>${ option }</option>`;
           }) }</select>`;
@@ -181,12 +188,12 @@ export default class Creator {
         
         if(Type.name !== currentCelestialBody.constructor.name){
           const { color, id, radius, x, y } = currentCelestialBody;
-          currentCelestialBody.celestialBody.remove();
+          currentCelestialBody.group.remove();
           
           currentCelestialBody = new Type({ color, id, radius, x, y });
           this.celestialBodies[id] = currentCelestialBody;
           this.addEditablePropsToDialog(currentCelestialBody);
-          this.parentSVG.appendChild(currentCelestialBody.celestialBody);
+          this.parentSVG.appendChild(currentCelestialBody.group);
         }
       }
     });
@@ -205,9 +212,9 @@ export default class Creator {
         });
       }
       else{
-        currentCelestialBody.celestialBody.remove();
+        currentCelestialBody.group.remove();
         this.celestialBodies[currentCelestialBody.id] = originalCelestialBody;
-        this.parentSVG.appendChild(originalCelestialBody.celestialBody);
+        this.parentSVG.appendChild(originalCelestialBody.group);
       }
       
       this.dialogIsOpen = false;
@@ -249,7 +256,7 @@ export default class Creator {
           x: this.startX,
           y: this.startY,
         });
-        this.parentSVG.appendChild(this.currentCelestialBody.celestialBody);
+        this.parentSVG.appendChild(this.currentCelestialBody.group);
         this.celestialBodies[this.currentCelestialBody.id] = this.currentCelestialBody;
       }
       else if(this.currentCelestialBody){

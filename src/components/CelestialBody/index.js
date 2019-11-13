@@ -5,17 +5,28 @@ export default class CelestialBody {
   
   constructor({
     color,
-    id,
     filter,
+    gravity = CelestialBody.DEFAULT__GRAVITY,
+    id,
     radius = CelestialBody.SIZE__MIN,
     x = 0,
     y = 0,
   } = {}) {
     this.color = color || CelestialBody.genColor();
+    this.gravity = gravity;
     this.id = id || Date.now();
     this.radius = radius;
     this.x = x;
     this.y = y;
+    
+    this.gravityField = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    this.gravityField.setAttributeNS(null, 'data-id', `${ this.id }_gF`);
+    this.gravityField.setAttributeNS(null, 'cx', x);
+    this.gravityField.setAttributeNS(null, 'cy', y);
+    this.gravityField.setAttributeNS(null, 'r', radius * gravity);
+    this.gravityField.setAttributeNS(null, 'fill', 'none');
+    this.gravityField.setAttributeNS(null, 'stroke', this.color);
+    this.gravityField.setAttributeNS(null, 'stroke-opacity', '15%');
     
     this.celestialBody = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     this.celestialBody.setAttributeNS(null, 'cx', x);
@@ -26,7 +37,12 @@ export default class CelestialBody {
     this.celestialBody.setAttributeNS(null, 'data-id', this.id);
     if(filter) this.celestialBody.setAttributeNS(null, 'filter', `url(#${ filter })`);
     
+    this.group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    this.group.append(this.gravityField);
+    this.group.append(this.celestialBody);
+    
     this.setColor = this.setColor.bind(this);
+    this.setGravity = this.setGravity.bind(this);
     this.setRadius = this.setRadius.bind(this);
     
     this.editableProps = {
@@ -35,6 +51,14 @@ export default class CelestialBody {
         label: 'Color',
         type: CelestialBody.EDITABLE_TYPE__COLOR,
         value: () => this.color,
+      },
+      gravity: {
+        handler: this.setGravity,
+        label: 'Gravity',
+        min: 0,
+        max: 50,
+        type: CelestialBody.EDITABLE_TYPE__NUMBER,
+        value: () => +this.gravity,
       },
       radius: {
         handler: this.setRadius,
@@ -48,8 +72,14 @@ export default class CelestialBody {
   }
   
   setColor(color) {
+    this.gravityField.setAttributeNS(null, 'stroke', color);
     this.celestialBody.setAttributeNS(null, 'fill', color);
     this.color = color;
+  }
+  
+  setGravity(gravity) {
+    this.gravityField.setAttributeNS(null, 'r', this.radius * gravity);
+    this.gravity = gravity;
   }
   
   setRadius(radius) {
@@ -64,11 +94,13 @@ export default class CelestialBody {
     
     normalizedRadius = Math.round(normalizedRadius);
     
+    this.gravityField.setAttributeNS(null, 'r', normalizedRadius * this.gravity);
     this.celestialBody.setAttributeNS(null, 'r', normalizedRadius);
     this.radius = normalizedRadius;
   }
 }
 
+CelestialBody.DEFAULT__GRAVITY = 2;
 CelestialBody.EDITABLE_TYPE__COLOR = 'color';
 CelestialBody.EDITABLE_TYPE__NUMBER = 'number';
 CelestialBody.EDITABLE_TYPE__SELECT = 'select';
