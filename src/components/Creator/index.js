@@ -64,10 +64,10 @@ export default class Creator {
     
     this.glowFilter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
     this.glowFilter.setAttributeNS(null, 'id', 'glow');
-    this.glowFilter.setAttributeNS(null, 'width', '300%');
-    this.glowFilter.setAttributeNS(null, 'height', '300%');
-    this.glowFilter.setAttributeNS(null, 'x', '-75%');
-    this.glowFilter.setAttributeNS(null, 'y', '-75%');
+    this.glowFilter.setAttributeNS(null, 'width', '600%');
+    this.glowFilter.setAttributeNS(null, 'height', '600%');
+    this.glowFilter.setAttributeNS(null, 'x', '-150%');
+    this.glowFilter.setAttributeNS(null, 'y', '-150%');
     this.glowFilter.innerHTML = `
       <!-- Thicken out the original shape -->
       <feMorphology operator="dilate" radius="4" in="SourceAlpha" result="thicken" />
