@@ -9,10 +9,7 @@ module.exports = {
     'eslint:recommended',
   ],
   parserOptions: {
-    ecmaFeatures: {
-      experimentalObjectRestSpread: true,
-    },
-    ecmaVersion: 2017, // adds async/await support
+    ecmaVersion: 2018, // adds async/await support
     sourceType: 'module',
   },
   plugins: [],
