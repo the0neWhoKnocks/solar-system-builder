@@ -6,6 +6,7 @@ export default class CelestialBody {
   constructor({
     color,
     id,
+    filter,
     radius = CelestialBody.SIZE__MIN,
     x = 0,
     y = 0,
@@ -23,6 +24,7 @@ export default class CelestialBody {
     this.celestialBody.setAttributeNS(null, 'fill', this.color);
     this.celestialBody.setAttributeNS(null, 'stroke', 'none');
     this.celestialBody.setAttributeNS(null, 'data-id', this.id);
+    if(filter) this.celestialBody.setAttributeNS(null, 'filter', `url(#${ filter })`);
     
     this.setColor = this.setColor.bind(this);
     this.setRadius = this.setRadius.bind(this);
