@@ -6,6 +6,7 @@ export default class Sun extends CelestialBody {
     ...opts
   } = {}) {
     opts.color = '#FFFFFF';
+    opts.filter = 'glow';
     super(opts);
     
     this.gravity = gravity;

@@ -59,6 +59,36 @@ export default class Creator {
     this.parentSVG.setAttributeNS(null, 'width', parentEl.offsetWidth);
     this.parentSVG.setAttributeNS(null, 'height', parentEl.offsetHeight);
     
+    this.defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    this.parentSVG.append(this.defs);
+    
+    this.glowFilter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    this.glowFilter.setAttributeNS(null, 'id', 'glow');
+    this.glowFilter.setAttributeNS(null, 'width', '300%');
+    this.glowFilter.setAttributeNS(null, 'height', '300%');
+    this.glowFilter.setAttributeNS(null, 'x', '-75%');
+    this.glowFilter.setAttributeNS(null, 'y', '-75%');
+    this.glowFilter.innerHTML = `
+      <!-- Thicken out the original shape -->
+      <feMorphology operator="dilate" radius="4" in="SourceAlpha" result="thicken" />
+
+      <!-- Use a gaussian blur to create the soft blurriness of the glow -->
+      <feGaussianBlur in="thicken" stdDeviation="10" result="blurred" />
+
+      <!-- Change the colour -->
+      <feFlood flood-color="rgb(255, 255, 255)" result="glowColor" />
+
+      <!-- Color in the glows -->
+      <feComposite in="glowColor" in2="blurred" operator="in" result="softGlow_colored" />
+
+      <!--	Layer the effects together -->
+      <feMerge>
+        <feMergeNode in="softGlow_colored"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    `;
+    this.defs.append(this.glowFilter);
+    
     this.mouseDown = this.mouseDown.bind(this);
     this.mouseMoved = this.mouseMoved.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
