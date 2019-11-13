@@ -28,7 +28,7 @@ const eventHandlers = {
 };
 let container;
 let creatorContainer;
-let planetCreator;
+let creator;
 let contXPos;
 let contYPos;
 
@@ -82,11 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.append(container);
   
   const rootNav = new RootNav({
-    onClear: () => {
-      [...planetCreator.parentSVG.childNodes].forEach((el) => {
-        el.remove();
-      });
-    },
+    onClear: () => { creator.clear(); },
   });
   container.append(rootNav.nav);
   
@@ -101,13 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
   eventHandlers.mouseMove.push(grid.mouseMoved);
   eventHandlers.mouseLeave.push(grid.mouseLeft);
   
-  planetCreator = new Creator({
+  creator = new Creator({
     parentEl: creatorContainer,
   });
-  creatorContainer.append(planetCreator.parentSVG);
-  eventHandlers.mouseDown.push(planetCreator.mouseDown);
-  eventHandlers.mouseMove.push(planetCreator.mouseMoved);
-  eventHandlers.mouseUp.push(planetCreator.mouseUp);
+  creatorContainer.append(creator.parentSVG);
+  eventHandlers.mouseDown.push(creator.mouseDown);
+  eventHandlers.mouseMove.push(creator.mouseMoved);
+  eventHandlers.mouseUp.push(creator.mouseUp);
   
   addListeners();
   handleResize();
