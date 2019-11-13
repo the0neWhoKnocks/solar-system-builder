@@ -213,6 +213,13 @@ export default class Creator {
       this.dialogIsOpen = false;
       dialog.remove();
     });
+    dialog.addEventListener('input', (ev) => {
+      const prop = ev.target.name;
+      const value = ev.target.value;
+      const eP = currentCelestialBody.editableProps[prop];
+      
+      if(eP) eP.handler(value);
+    });
   }
   
   handleClick(ev) {
