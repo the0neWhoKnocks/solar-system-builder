@@ -147,7 +147,7 @@ export default class Creator {
   
   clear() {
     [...this.parentSVG.childNodes].forEach((el) => {
-      el.remove();
+      if(el.nodeName !== 'defs') el.remove();
     });
     this.celestialBodies = {};
   }
