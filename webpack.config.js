@@ -58,7 +58,7 @@ const conf = {
   output: {
     path: PUBLIC,
     // the URL path where bundle assets will be accessible 
-    publicPath: '/',
+    publicPath: './',
     // assigns the hashed name to the file
     filename: `[name]_[chunkhash:${ HASH_LENGTH }].js`,
     // filename: `[name].js`,
