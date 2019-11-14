@@ -14,11 +14,12 @@ export default class Grid {
         font-size: 0;
         background: #262d38;
         cursor: crosshair;
+        opacity: 0.5;
       }
       
       .${ className } .hover-canvas {
-        filter: blur(14px);
-        opacity: 0.3;
+        filter: blur(15px);
+        opacity: 0.5;
         position: absolute;
         top: 0;
         left: 0;
