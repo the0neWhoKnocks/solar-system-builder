@@ -3,20 +3,19 @@ export default class CelestialBody {
     return `#${ ('000000' + Math.random().toString(16).slice(2, 8).toUpperCase()).slice(-6) }`;
   }
   
-  static genArrowTransform({ rotate, x, y }) {
+  static genArrowTransform({ pos, rotate, x, y }) {
     return {
-      json: JSON.stringify({ rotate, x, y }),
+      json: JSON.stringify({ pos, rotate, x, y }),
       value: `translate(${ x } ${ y }) rotate(${ rotate })`,
     };
   }
   
-  static createArrow({ rotate = 0, x = 0, y = 0 }) {
+  static createArrow({ pos, rotate = 0, x = 0, y = 0 }) {
     const arrowSize = 10;
     const rotationArrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    const transform = CelestialBody.genArrowTransform({ rotate, x, y });
+    const transform = CelestialBody.genArrowTransform({ pos, rotate, x, y });
     
     rotationArrow.setAttributeNS(null, 'points', `0,-${ arrowSize/2 } ${ arrowSize/2 },${ arrowSize/2 } 0,${ arrowSize*0.25 } -${ arrowSize/2 },${ arrowSize/2 }`);
-    rotationArrow.setAttributeNS(null, 'transform', transform.value);
     rotationArrow.setAttributeNS(null, 'data-transform', transform.json);
     
     return rotationArrow;
@@ -36,6 +35,7 @@ export default class CelestialBody {
     this.gravity = gravity;
     this.id = id || Date.now();
     this.radius = radius;
+    this.rotation = rotation;
     this.x = x;
     this.y = y;
     
@@ -53,10 +53,10 @@ export default class CelestialBody {
     this.directionalArrows.setAttributeNS(null, 'fill-opacity', '25%');
     this.directionalArrows.setAttributeNS(null, 'stroke', 'none');
     this.directionalArrows.setAttributeNS(null, 'transform', `translate(${ x } ${ y })`);
-    this.directionalArrows.append(CelestialBody.createArrow({ y: -radius, rotate: 90 }));
-    this.directionalArrows.append(CelestialBody.createArrow({ x: radius, rotate: 180 }));
-    this.directionalArrows.append(CelestialBody.createArrow({ y: radius, rotate: 270 }));
-    this.directionalArrows.append(CelestialBody.createArrow({ x: -radius, rotate: 0 }));
+    this.directionalArrows.append(CelestialBody.createArrow({ pos: 'top' }));
+    this.directionalArrows.append(CelestialBody.createArrow({ pos: 'left' }));
+    this.directionalArrows.append(CelestialBody.createArrow({ pos: 'bottom' }));
+    this.directionalArrows.append(CelestialBody.createArrow({ pos: 'right' }));
     
     this.celestialBody = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     this.celestialBody.setAttributeNS(null, 'cx', x);
@@ -75,6 +75,7 @@ export default class CelestialBody {
     this.setColor = this.setColor.bind(this);
     this.setGravity = this.setGravity.bind(this);
     this.setRadius = this.setRadius.bind(this);
+    this.setRotation = this.setRotation.bind(this);
     
     this.editableProps = {
       color: {
@@ -99,23 +100,47 @@ export default class CelestialBody {
         type: CelestialBody.EDITABLE_TYPE__NUMBER,
         value: () => +this.radius,
       },
+      rotation: {
+        handler: this.setRotation,
+        label: 'Rotation',
+        options: [
+          CelestialBody.ROTATION__CLOCKWISE,
+          CelestialBody.ROTATION__COUNTER_CLOCKWISE,
+        ],
+        type: CelestialBody.EDITABLE_TYPE__SELECT,
+        value: () => this.rotation,
+      },
     };
   }
   
   renderDirectionalArrows() {
     const gravityRadius = this.radius * this.gravity;
+    const isClockwise = this.rotation === CelestialBody.ROTATION__CLOCKWISE;
+    
     [...this.directionalArrows.childNodes].forEach((arrow) => {
       const transforms = JSON.parse(arrow.getAttribute('data-transform'));
-      switch(transforms.rotate){
-        // top
-        case 90: transforms.y = -gravityRadius; break;
-        // right
-        case 180: transforms.x = gravityRadius; break;
-        // bottom
-        case 270: transforms.y = gravityRadius; break;
-        // left
-        case 0: transforms.x = -gravityRadius; break;
+      switch(transforms.pos){
+        case 'top': 
+          transforms.y = -gravityRadius;
+          transforms.rotate = (isClockwise) ? 90 : 270;
+          break;
+        
+        case 'left':
+          transforms.x = gravityRadius;
+          transforms.rotate = (isClockwise) ? 180 : 0;
+          break;
+        
+        case 'bottom':
+          transforms.y = gravityRadius;
+          transforms.rotate = (isClockwise) ? 270 : 90;
+          break;
+          
+        case 'right':
+          transforms.x = -gravityRadius;
+          transforms.rotate = (isClockwise) ? 0 : 180;
+          break;
       }
+      
       const transform = CelestialBody.genArrowTransform({ ...transforms });
       arrow.setAttributeNS(null, 'transform', transform.value);
       arrow.setAttributeNS(null, 'data-transform', transform.json);
@@ -150,6 +175,11 @@ export default class CelestialBody {
     this.celestialBody.setAttributeNS(null, 'r', normalizedRadius);
     this.radius = normalizedRadius;
     this.setGravity(this.gravity);
+  }
+  
+  setRotation(rotation) {
+    this.rotation = rotation;
+    this.renderDirectionalArrows();
   }
 }
 
