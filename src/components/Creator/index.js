@@ -36,8 +36,14 @@ export default class Creator {
         background: rgba(38, 45, 56, 0.5);  
       }
       .${ className }__dialog-prop {
-        margin-bottom: 1em;
-        display: block;
+        padding-bottom: 0.5em;
+        border-bottom: solid 1px #dadada;
+        margin-bottom: 0.5em;
+        display: flex;
+        justify-content: space-between;
+      }
+      .${ className }__dialog-prop *:first-child {
+        margin-left: 1em;
       }
       .${ className }__dialog-menu {
         margin: 0;
@@ -131,7 +137,7 @@ export default class Creator {
         case CelestialBody.EDITABLE_TYPE__SELECT:
           if(!data.options || !data.options.length) errors.push(`- [${ prop }] Missing options`);
           
-          markup = `<select name="${ prop }">${ data.options().map((option) => {
+          markup = `<select name="${ prop }">${ data.options.map((option) => {
             return `<option value="${ option }" ${ value === option ? 'selected' : '' }>${ option }</option>`;
           }) }</select>`;
           break;
