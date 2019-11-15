@@ -27,6 +27,10 @@ export default class Creator {
         left: 0;
       }
       
+      .${ className }-container {
+        background: black;
+      }
+      
       .${ className }__dialog form {
         padding: 1em;
       }
