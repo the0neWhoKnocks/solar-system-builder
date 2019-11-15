@@ -205,10 +205,11 @@ export default class Creator {
         const Type = TYPES.find((type) => type.name === ev.target.value);
         
         if(Type.name !== currentCelestialBody.constructor.name){
-          const { color, id, radius, x, y } = currentCelestialBody;
+          const { color, gravity, id, radius, rotation, x, y } = currentCelestialBody;
           currentCelestialBody.group.remove();
-          
-          currentCelestialBody = new Type({ color, id, radius, x, y });
+          currentCelestialBody = (Type.name === originalCelestialBody.constructor.name)
+            ? originalCelestialBody
+            : new Type({ color, gravity, id, radius, rotation, x, y });
           this.celestialBodies[id] = currentCelestialBody;
           this.addEditablePropsToDialog(currentCelestialBody);
           this.parentSVG.appendChild(currentCelestialBody.group);
