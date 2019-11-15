@@ -109,6 +109,8 @@ export default class CelestialBody {
         value: () => this.rotation,
       },
     };
+    
+    this.renderDirectionalArrows();
   }
   
   renderDirectionalArrows() {
