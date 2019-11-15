@@ -216,6 +216,7 @@ export default class Creator {
             : new Type({ color, gravity, id, radius, rotation, x, y });
           this.celestialBodies[id] = currentCelestialBody;
           this.addEditablePropsToDialog(currentCelestialBody);
+          dialog.updatePosition({ x, y });
           this.parentSVG.appendChild(currentCelestialBody.group);
         }
       }
