@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin');
 const TidyPlugin = require('@noxx/webpack-tidy-plugin');
 const repoConfig = require('./conf.repo');
+const { homepage: REPO_URL } = require('./package.json');
 
 const {
   SRC,
@@ -79,8 +80,9 @@ const conf = {
     // }),
     
     new HtmlWebpackPlugin({
-      title: 'Solar System Builder',
+      repoURL: REPO_URL,
       template: `${ SRC }/index.html`,
+      title: 'Solar System Builder',
     }),
     /**
      * Provides build progress in the CLI
