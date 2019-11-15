@@ -176,9 +176,11 @@ export default class Creator {
         </form>
       `,
       onCancel: () => {
-        currentCelestialBody.group.remove();
-        this.celestialBodies[currentCelestialBody.id] = originalCelestialBody;
-        this.parentSVG.appendChild(originalCelestialBody.group);
+        if(currentCelestialBody !== originalCelestialBody){
+          currentCelestialBody.group.remove();
+          this.celestialBodies[currentCelestialBody.id] = originalCelestialBody;
+          this.parentSVG.appendChild(originalCelestialBody.group);
+        }
         
         this.dialogIsOpen = false;
       },
