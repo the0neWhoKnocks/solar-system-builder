@@ -23,7 +23,6 @@ export default class CelestialBody {
   
   constructor({
     color,
-    filter,
     gravity = CelestialBody.DEFAULT__GRAVITY,
     id,
     radius = CelestialBody.SIZE__MIN,
@@ -64,7 +63,6 @@ export default class CelestialBody {
     this.celestialBody.setAttributeNS(null, 'fill', this.color);
     this.celestialBody.setAttributeNS(null, 'stroke', 'none');
     this.celestialBody.setAttributeNS(null, 'data-id', this.id);
-    if(filter) this.celestialBody.setAttributeNS(null, 'filter', `url(#${ filter })`);
     
     this.group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     this.group.setAttributeNS(null, 'transform', `translate(${ x } ${ y })`);
