@@ -36,6 +36,9 @@ export default class Dialog {
     
     this.onCancel = onCancel;
     this.onSubmit = onSubmit;
+    this.parentEl = parentEl;
+    this.x = x;
+    this.y = y;
     
     this.backdrop = document.createElement('div');
     this.backdrop.setAttribute('class', `${ className }-backdrop`);
@@ -46,13 +49,12 @@ export default class Dialog {
     parentEl.append(this.dialogWindow);
     this.dialogWindow.innerHTML = content;
     
-    this.dialogWindow.style.top = `${ y }px`;
-    this.dialogWindow.style.left = `${ x }px`;
-    
     this.handleClick = this.handleClick.bind(this);
     
     this.backdrop.addEventListener('click', this.handleClick);
     this.dialogWindow.addEventListener('click', this.handleClick);
+    
+    this.updatePosition();
   }
   
   handleClick(ev) {
@@ -68,10 +70,27 @@ export default class Dialog {
       
       this.remove();
     }
+    else if(target === this.backdrop){
+      if(this.onCancel) this.onCancel();
+      this.remove();
+    }
   }
   
   remove() {
     this.backdrop.remove();
     this.dialogWindow.remove();
+  }
+  
+  updatePosition() {
+    window.requestAnimationFrame(() => {
+      const dialogWidth = this.dialogWindow.offsetWidth;
+      const dialogHeight = this.dialogWindow.offsetHeight;
+      
+      if((this.x + dialogWidth) > this.parentEl.offsetWidth) this.x = this.x - dialogWidth;
+      if((this.y + dialogHeight) > this.parentEl.offsetHeight) this.y = this.y - dialogHeight;
+      
+      this.dialogWindow.style.top = `${ this.y }px`;
+      this.dialogWindow.style.left = `${ this.x }px`;
+    });
   }
 }
