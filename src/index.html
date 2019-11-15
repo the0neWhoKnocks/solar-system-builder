@@ -24,6 +24,9 @@
         background: #fff;
       }
     </style>
+    <script>
+      window.BUILD_TIME = <%= Date.now() %>;
+    </script>
   </head>
   <body>
     <a class="gh-link" href="<%= htmlWebpackPlugin.options.repoURL %>">
