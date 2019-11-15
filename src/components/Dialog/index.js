@@ -54,7 +54,7 @@ export default class Dialog {
     this.backdrop.addEventListener('click', this.handleClick);
     this.dialogWindow.addEventListener('click', this.handleClick);
     
-    this.updatePosition();
+    this.updatePosition({ x, y });
   }
   
   handleClick(ev) {
@@ -81,13 +81,15 @@ export default class Dialog {
     this.dialogWindow.remove();
   }
   
-  updatePosition() {
+  updatePosition({ x, y }) {
     window.requestAnimationFrame(() => {
       const dialogWidth = this.dialogWindow.offsetWidth;
       const dialogHeight = this.dialogWindow.offsetHeight;
+      this.x = x;
+      this.y = y;
       
-      if((this.x + dialogWidth) > this.parentEl.offsetWidth) this.x = this.x - dialogWidth;
-      if((this.y + dialogHeight) > this.parentEl.offsetHeight) this.y = this.y - dialogHeight;
+      if((x + dialogWidth) > this.parentEl.offsetWidth) this.x = x - dialogWidth;
+      if((y + dialogHeight) > this.parentEl.offsetHeight) this.y = y - dialogHeight;
       
       this.dialogWindow.style.top = `${ this.y }px`;
       this.dialogWindow.style.left = `${ this.x }px`;
