@@ -1,6 +1,7 @@
 import Asteroid from 'COMPONENTS/Asteroid';
 import BlackHole from 'COMPONENTS/BlackHole';
 import CelestialBody from 'COMPONENTS/CelestialBody';
+import Dialog from 'COMPONENTS/Dialog';
 import Moon from 'COMPONENTS/Moon';
 import Planet from 'COMPONENTS/Planet';
 import Sun from 'COMPONENTS/Sun';
@@ -26,14 +27,8 @@ export default class Creator {
         left: 0;
       }
       
-      .${ className }__dialog {
-        font-family: Helvetica, Arial, sans-serif;
-        border: solid 1px #b7b7b7;
-        border-radius: 0.25em;
-        box-shadow: 0 6px 10px 3px;
-      }
-      .${ className }__dialog::backdrop {
-        background: rgba(38, 45, 56, 0.5);  
+      .${ className }__dialog form {
+        padding: 1em;
       }
       .${ className }__dialog-prop {
         padding-bottom: 0.5em;
@@ -162,33 +157,48 @@ export default class Creator {
     let currentCelestialBody = celestialBody;
     let originalCelestialBody = celestialBody;
     
-    const dialog = document.createElement('dialog');
-    dialog.setAttribute('class', `${ this.className }__dialog`);
-    this.parentEl.append(dialog);
-    
     const typeSelect = `<select name="type">${ TYPES.map((type) => {
       const currType = currentCelestialBody.constructor.name;
       const option = type.name;
       return `<option value="${ option }" ${ currType === option ? 'selected' : '' }>${ option }</option>`;
     }) }</select>`;
     
-    dialog.innerHTML = `
-      <form method="dialog">
-        <label class="${ this.className }__dialog-prop">Type: ${ typeSelect }</label>
-        <div id="editableProps"></div>
-        <menu class="${ this.className }__dialog-menu">
-          <button value="cancel">Cancel</button>
-          <button value="save">Save</button>
-        </menu>
-      </form>
-    `;
+    const dialog = new Dialog({
+      className: `${ this.className }__dialog`,
+      content: `
+        <form>
+          <label class="${ this.className }__dialog-prop">Type: ${ typeSelect }</label>
+          <div id="editableProps"></div>
+          <menu class="${ this.className }__dialog-menu">
+            <button type="button">Cancel</button>
+            <button type="submit">Save</button>
+          </menu>
+        </form>
+      `,
+      onCancel: () => {
+        currentCelestialBody.group.remove();
+        this.celestialBodies[currentCelestialBody.id] = originalCelestialBody;
+        this.parentSVG.appendChild(originalCelestialBody.group);
+        
+        this.dialogIsOpen = false;
+      },
+      onSubmit: (type, formData) => {
+        [...formData].forEach(([prop, value]) => {
+          const eP = currentCelestialBody.editableProps[prop];
+          if(eP) eP.handler(value);
+        });
+        this.dialogIsOpen = false;
+      },
+      parentEl: this.parentEl,
+      x: currentCelestialBody.x,
+      y: currentCelestialBody.y,
+    });
     
     this.addEditablePropsToDialog(currentCelestialBody);
     
-    dialog.showModal();
     this.dialogIsOpen = true;
     
-    dialog.addEventListener('change', (ev) => {
+    dialog.dialogWindow.addEventListener('change', (ev) => {
       if(ev.target.name === 'type'){
         const Type = TYPES.find((type) => type.name === ev.target.value);
         
@@ -203,30 +213,7 @@ export default class Creator {
         }
       }
     });
-    dialog.addEventListener('click', (ev) => {
-      // The Dialog sits under the form, so if the Dialog is detected, the user
-      // clicked on the backdrop, which means they want to close.
-      if(ev.target.nodeName === 'DIALOG') dialog.close();
-    });
-    dialog.addEventListener('close', () => {
-      if(dialog.returnValue === 'save'){
-        const formData = new FormData(dialog.querySelector('form'));
-        
-        [...formData].forEach(([prop, value]) => {
-          const eP = currentCelestialBody.editableProps[prop];
-          if(eP) eP.handler(value);
-        });
-      }
-      else{
-        currentCelestialBody.group.remove();
-        this.celestialBodies[currentCelestialBody.id] = originalCelestialBody;
-        this.parentSVG.appendChild(originalCelestialBody.group);
-      }
-      
-      this.dialogIsOpen = false;
-      dialog.remove();
-    });
-    dialog.addEventListener('input', (ev) => {
+    dialog.dialogWindow.addEventListener('input', (ev) => {
       const prop = ev.target.name;
       const value = ev.target.value;
       const eP = currentCelestialBody.editableProps[prop];

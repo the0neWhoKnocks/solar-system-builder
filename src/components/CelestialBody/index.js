@@ -40,8 +40,8 @@ export default class CelestialBody {
     this.y = y;
     
     this.gravityField = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    this.gravityField.setAttributeNS(null, 'cx', x);
-    this.gravityField.setAttributeNS(null, 'cy', y);
+    this.gravityField.setAttributeNS(null, 'cx', 0);
+    this.gravityField.setAttributeNS(null, 'cy', 0);
     this.gravityField.setAttributeNS(null, 'r', radius * gravity);
     this.gravityField.setAttributeNS(null, 'fill', 'none');
     this.gravityField.setAttributeNS(null, 'stroke', this.color);
@@ -52,15 +52,14 @@ export default class CelestialBody {
     this.directionalArrows.setAttributeNS(null, 'fill', this.color);
     this.directionalArrows.setAttributeNS(null, 'fill-opacity', '25%');
     this.directionalArrows.setAttributeNS(null, 'stroke', 'none');
-    this.directionalArrows.setAttributeNS(null, 'transform', `translate(${ x } ${ y })`);
     this.directionalArrows.append(CelestialBody.createArrow({ pos: 'top' }));
     this.directionalArrows.append(CelestialBody.createArrow({ pos: 'left' }));
     this.directionalArrows.append(CelestialBody.createArrow({ pos: 'bottom' }));
     this.directionalArrows.append(CelestialBody.createArrow({ pos: 'right' }));
     
     this.celestialBody = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    this.celestialBody.setAttributeNS(null, 'cx', x);
-    this.celestialBody.setAttributeNS(null, 'cy', y);
+    this.celestialBody.setAttributeNS(null, 'cx', 0);
+    this.celestialBody.setAttributeNS(null, 'cy', 0);
     this.celestialBody.setAttributeNS(null, 'r', radius);
     this.celestialBody.setAttributeNS(null, 'fill', this.color);
     this.celestialBody.setAttributeNS(null, 'stroke', 'none');
@@ -68,6 +67,7 @@ export default class CelestialBody {
     if(filter) this.celestialBody.setAttributeNS(null, 'filter', `url(#${ filter })`);
     
     this.group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    this.group.setAttributeNS(null, 'transform', `translate(${ x } ${ y })`);
     this.group.append(this.gravityField);
     this.group.append(this.directionalArrows);
     this.group.append(this.celestialBody);
