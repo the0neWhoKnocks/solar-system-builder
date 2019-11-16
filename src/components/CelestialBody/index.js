@@ -32,6 +32,7 @@ export default class CelestialBody {
   } = {}) {
     this.color = color || CelestialBody.genColor();
     this.gravity = gravity;
+    this.gravityFieldVal = radius * gravity;
     this.id = id || Date.now();
     this.radius = radius;
     this.rotation = rotation;
@@ -41,7 +42,7 @@ export default class CelestialBody {
     this.gravityField = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     this.gravityField.setAttributeNS(null, 'cx', 0);
     this.gravityField.setAttributeNS(null, 'cy', 0);
-    this.gravityField.setAttributeNS(null, 'r', radius * gravity);
+    this.gravityField.setAttributeNS(null, 'r', this.gravityFieldVal);
     this.gravityField.setAttributeNS(null, 'fill', 'none');
     this.gravityField.setAttributeNS(null, 'stroke', this.color);
     this.gravityField.setAttributeNS(null, 'stroke-opacity', '15%');
@@ -155,9 +156,17 @@ export default class CelestialBody {
   }
   
   setGravity(gravity) {
-    this.gravityField.setAttributeNS(null, 'r', this.radius * gravity);
     this.gravity = gravity;
+    this.gravityFieldVal = this.radius * gravity;
+    this.gravityField.setAttributeNS(null, 'r', this.gravityFieldVal);
     this.renderDirectionalArrows();
+  }
+  
+  setPos({ x, y }) {
+    if(x !== undefined) this.x = x;
+    if(y !== undefined) this.y = y;
+    
+    this.group.setAttributeNS(null, 'transform', `translate(${ this.x } ${ this.y })`);
   }
   
   setRadius(radius) {

@@ -15,6 +15,7 @@ export default class RootNav {
   constructor({
     className = 'root-nav',
     onClear,
+    onSimulate,
   } = {}) {
     addStyles('rnStyles', `
       .${ className } {
@@ -44,5 +45,6 @@ export default class RootNav {
     `;
     
     this.nav.querySelector(`.${ className }__clear-btn`).addEventListener('click', onClear);
+    this.nav.querySelector(`.${ className }__simulate-btn`).addEventListener('click', onSimulate);
   }
 }

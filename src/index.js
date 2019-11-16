@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const rootNav = new RootNav({
     onClear: () => { creator.clear(); },
+    onSimulate: () => { creator.simulate(); },
   });
   container.append(rootNav.nav);
   

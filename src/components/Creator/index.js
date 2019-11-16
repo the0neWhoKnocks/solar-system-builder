@@ -230,6 +230,30 @@ export default class Creator {
     });
   }
   
+  findGravitationalRelationships() {
+    const effects = {};
+    
+    Object.keys(this.celestialBodies).forEach((currId) => {
+      const currCB = this.celestialBodies[currId];
+      const { gravityFieldVal, x: currX, y: currY } = currCB;
+      
+      Object.keys(this.celestialBodies).forEach((id) => {
+        if(id !== currId){
+          const cB = this.celestialBodies[id];
+          const { radius, x, y } = cB;
+          const intersects = Math.hypot(currX - x, currY - y) <= (gravityFieldVal + radius);
+
+          if(intersects){
+            if(!effects[currId]) effects[currId] = [];
+            effects[currId].push(cB);
+          }
+        }
+      });
+    });
+    
+    return effects;
+  }
+  
   handleClick(ev) {
     const el = ev.target;
     
@@ -269,5 +293,40 @@ export default class Creator {
   mouseUp() {
     this.currentCelestialBody = undefined;
     this.mouseIsDown = false;
+  }
+  
+  rotateAroundPoint(x, y, angle, cB) {
+    const radians = (angle) * (Math.PI/180);
+    const rotatedX = Math.cos(radians) * (cB.x - x) - Math.sin(radians) * (cB.y - y) + x;
+    const rotatedY = Math.sin(radians) * (cB.x - x) + Math.cos(radians) * (cB.y - y) + y;
+    cB.setPos({ x: rotatedX, y: rotatedY });
+  }
+  
+  getDistanceBetweenPoints(p1x, p1y, p2x, p2y) {
+    return Math.sqrt( Math.pow((p1x - p2x), 2) + Math.pow((p1y - p2y), 2) );
+  }
+  
+  simulate() {
+    const relationships = this.findGravitationalRelationships();
+    const ORBIT_SPEED = 1;
+    
+    const orbit = () => {
+      Object.keys(relationships).forEach((id) => {
+        const { gravityFieldVal, x, y } = this.celestialBodies[id];
+        relationships[id].forEach((cB) => {
+          const dist = this.getDistanceBetweenPoints(x, y, cB.x, cB.y);
+          const orbitSpeed = ORBIT_SPEED * Math.abs(Math.round(dist - gravityFieldVal) / 100);
+          this.rotateAroundPoint(x, y, orbitSpeed, cB);
+        });
+      });
+    };
+    
+    const render = () => {
+      orbit();
+      window.requestAnimationFrame(render);
+    };
+    
+    render();
+    console.log(relationships);
   }
 }
