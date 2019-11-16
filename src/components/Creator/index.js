@@ -306,7 +306,7 @@ export default class Creator {
     return Math.sqrt( Math.pow((p1x - p2x), 2) + Math.pow((p1y - p2y), 2) );
   }
   
-  simulate() {
+  startSimulation() {
     const relationships = this.findGravitationalRelationships();
     const ORBIT_SPEED = 1;
     
@@ -322,11 +322,17 @@ export default class Creator {
     };
     
     const render = () => {
-      orbit();
-      window.requestAnimationFrame(render);
+      if(this.runSimulation){
+        orbit();
+        window.requestAnimationFrame(render);
+      }
     };
     
+    this.runSimulation = true;
     render();
-    console.log(relationships);
+  }
+  
+  stopSimulation() {
+    this.runSimulation = false;
   }
 }

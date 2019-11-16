@@ -16,6 +16,7 @@ export default class RootNav {
     className = 'root-nav',
     onClear,
     onSimulate,
+    simulationStartText,
   } = {}) {
     addStyles('rnStyles', `
       .${ className } {
@@ -39,12 +40,23 @@ export default class RootNav {
     this.nav.innerHTML = `
       <div>Built On: ${ FORMATTED_BUILD_TIME }</div>
       <div>
-        <button class="${ className }__simulate-btn" type="button">Simulate</button>
+        <button class="${ className }__simulate-btn" type="button">${ simulationStartText }</button>
         <button class="${ className }__clear-btn" type="button">Clear</button>
       </div>
     `;
     
-    this.nav.querySelector(`.${ className }__clear-btn`).addEventListener('click', onClear);
-    this.nav.querySelector(`.${ className }__simulate-btn`).addEventListener('click', onSimulate);
+    this.clearBtn = this.nav.querySelector(`.${ className }__clear-btn`);
+    this.simulateBtn = this.nav.querySelector(`.${ className }__simulate-btn`);
+    
+    this.clearBtn.addEventListener('click', onClear);
+    this.simulateBtn.addEventListener('click', onSimulate);
+  }
+  
+  disableClear() {
+    this.clearBtn.disabled = true;
+  }
+  
+  enableClear() {
+    this.clearBtn.disabled = false;
   }
 }
