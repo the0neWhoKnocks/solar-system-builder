@@ -312,10 +312,11 @@ export default class Creator {
     
     const orbit = () => {
       Object.keys(relationships).forEach((id) => {
-        const { gravityFieldVal, x, y } = this.celestialBodies[id];
+        const { gravityFieldVal, rotation, x, y } = this.celestialBodies[id];
         relationships[id].forEach((cB) => {
           const dist = this.getDistanceBetweenPoints(x, y, cB.x, cB.y);
-          const orbitSpeed = ORBIT_SPEED * Math.abs(Math.round(dist - gravityFieldVal) / 100);
+          let orbitSpeed = ORBIT_SPEED * Math.abs(Math.round(dist - gravityFieldVal) / 100);
+          if(rotation === CelestialBody.ROTATION__COUNTER_CLOCKWISE) orbitSpeed *= -1;
           this.rotateAroundPoint(x, y, orbitSpeed, cB);
         });
       });
