@@ -81,9 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
   container.setAttribute('class', 'container');
   document.body.append(container);
   
+  const START_SIMULATION_TEXT = 'Run Simulation';
+  const STOP_SIMULATION_TEXT = 'Stop Simulation';
   const rootNav = new RootNav({
     onClear: () => { creator.clear(); },
-    onSimulate: () => { creator.simulate(); },
+    onSimulate: () => {
+      if(creator.runSimulation){
+        creator.stopSimulation();
+        rootNav.simulateBtn.innerText = START_SIMULATION_TEXT;
+        rootNav.enableClear();
+      }
+      else{
+        creator.startSimulation();
+        rootNav.simulateBtn.innerText = STOP_SIMULATION_TEXT;
+        rootNav.disableClear();
+      }
+    },
+    simulationStartText: START_SIMULATION_TEXT,
   });
   container.append(rootNav.nav);
   
