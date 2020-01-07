@@ -163,8 +163,9 @@ export default class Creator {
     
     const typeSelect = `<select name="type">${ TYPES.map((type) => {
       const currType = currentCelestialBody.constructor.name;
-      const option = type.name;
-      return `<option value="${ option }" ${ currType === option ? 'selected' : '' }>${ option }</option>`;
+      const rawType = type.name;
+      const option = rawType.split('_')[0]; // NOTE - WP will change Class names during minification, to something like <NAME>_<NAME>
+      return `<option value="${ rawType }" ${ currType === rawType ? 'selected' : '' }>${ option }</option>`;
     }) }</select>`;
     
     const dialog = new Dialog({
