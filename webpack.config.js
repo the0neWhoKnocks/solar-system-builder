@@ -2,6 +2,7 @@ const { resolve } = require('path');
 // const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const TidyPlugin = require('@noxx/webpack-tidy-plugin');
 const repoConfig = require('./conf.repo');
 const { homepage: REPO_URL } = require('./package.json');
@@ -40,6 +41,11 @@ const conf = {
     ],
   },
   optimization: {
+    minimizer: [new TerserPlugin({
+      terserOptions: {
+        keep_classnames: true,
+      },
+    })],
     noEmitOnErrors: true,
     runtimeChunk: {
       name: VENDOR_CHUNK_NAME,
